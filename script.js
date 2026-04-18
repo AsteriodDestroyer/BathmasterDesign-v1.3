@@ -472,3 +472,71 @@ document.addEventListener("DOMContentLoaded", () => {
     menuToggle.classList.toggle("active");
   };
 });
+// ===============================
+// CHATBOT LOGIC
+// ===============================
+const toggle = document.querySelector('.chat-toggle');
+const windowEl = document.querySelector('.chat-window');
+const closeBtn = document.querySelector('.chat-close');
+const chatBody = document.getElementById('chatBody');
+const input = document.getElementById('chatInput');
+const sendBtn = document.getElementById('sendBtn');
+
+toggle.addEventListener('click', () => {
+  windowEl.style.display = 'flex';
+  toggle.style.display = 'none'; // hide bubble when expanded
+  resetChat();
+});
+
+closeBtn.addEventListener('click', () => {
+  windowEl.style.display = 'none';
+  toggle.style.display = 'flex'; // show bubble again
+  resetChat();
+});
+
+sendBtn.addEventListener('click', sendMessage);
+input.addEventListener('keypress', e => {
+  if (e.key === 'Enter') sendMessage();
+});
+
+function sendMessage() {
+  const text = input.value.trim();
+  if (!text) return;
+  addMessage(text, 'user');
+  input.value = '';
+
+  setTimeout(() => {
+    let reply = '';
+    if (/inspiration/i.test(text)) {
+      reply = 'Great choice! You can browse our portfolio to see completed projects.';
+    } else if (/renovation/i.test(text)) {
+      reply = 'Perfect! Would you like to schedule a free consultation?';
+    } else if (/full remodel/i.test(text)) {
+      reply = 'We specialize in complete bathroom transformations.';
+    } else if (/shower/i.test(text)) {
+      reply = 'We can design and build custom showers tailored to your space.';
+    } else if (/accessible/i.test(text)) {
+      reply = 'We create safe, stylish accessible bathrooms.';
+    } else if (/yes/i.test(text)) {
+      reply = 'Please provide your email or phone number, and we’ll reach out.';
+    } else if (/no/i.test(text)) {
+      reply = 'No problem! You can explore our services anytime.';
+    } else {
+      reply = 'Thanks for sharing! Feel free to ask me about services, portfolio, or consultations.';
+    }
+    addMessage(reply, 'bot');
+  }, 600);
+}
+
+function addMessage(text, type) {
+  const msg = document.createElement('div');
+  msg.className = type === 'bot' ? 'bot-msg' : 'user-msg';
+  msg.textContent = text;
+  chatBody.appendChild(msg);
+  chatBody.scrollTop = chatBody.scrollHeight;
+}
+
+function resetChat() {
+  chatBody.innerHTML = '';
+  addMessage('Hello! 👋 Welcome to Bath Master Design. Are you looking for inspiration or ready to start a renovation project?', 'bot');
+}
